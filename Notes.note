@@ -1,0 +1,118 @@
+import axios from "axios";
+import { useEffect, useState } from "react";
+import Error from "./Error";
+import Lock from "./Lock";
+
+function Weather() {
+  const [location, setLocation] = useState("");
+  const [data, setData] = useState({});
+  let [error, setError] = useState(false);
+
+  let URL = `https://api.openweathermap.org/data/2.5/weather?q=${location}&appid=0498080e1a5197f270b0caf571365be5 `;
+
+  async function getWeather() {
+    try {
+      if (location) {
+        const response = await axios(URL);
+        setData(response.data);
+        setError((error = false));
+      } else {
+        setError((error) => !error);
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  }
+
+  useEffect(() => {
+    getWeather();
+    console.log("mount");
+  }, []);
+
+  // console.log(data);
+
+  return (
+    <>
+      {/* {location ? ( */}
+      <div className="Imagebg ">
+        <div className="flex z-10 backdrop-blur-sm">
+          <div className="w-[70%] h-[100vh] flex  p-6 ">
+            <div>
+              <Lock />
+              <div className="">
+                {data.current ? (
+                  <img
+                    className="w-32 drop-shadow-md "
+                    src={
+                      data.current.condition.icon
+                        ? `http://openweathermap.org/img/wn/${data.current.condition.icon}@2x.png`
+                        : null
+                    }
+                    alt=""
+                  />
+                ) : null}
+              </div>
+            </div>
+          </div>
+          {/* <div className='w-[33%] h-[100vh] '></div> */}
+
+          <div className="w-[33%] h-[88vh] capitalize p-4 bg-gray-700 bg-opacity-30 pl-10 m-8">
+            <div className=" flex flex-row justify-center items-center">
+              <div>
+                <input
+                  className="bg-slate-300 capitalize outline-none p-2 mr-6 w-72 h-10 placeholder-white accent-white text-white"
+                  value={location}
+                  type="text"
+                  placeholder="search..."
+                  onChange={(e) => setLocation(e.target.value)}
+                />
+              </div>
+              <div>
+                <button
+                  onClick={getWeather}
+                  className="bg-gray-300 px-1 py-1 rounded-full ml-4 text-white mt-2 active:scale-[0.6] transition-transform"
+                >
+                  <span>search</span>
+                </button>
+              </div>
+            </div>
+            <p className="text-5xl text-white mt-4 ">City: {data.name}</p>
+            <div className="w-full h-1 bg-white rounded-full opacity-35 mt-4"></div>
+            <p className="text-xl text-white mt-2">
+              Weather: {data.weather ? data.weather[0].description : null}
+            </p>
+            <div className="w-full h-1 bg-white rounded-full opacity-35 mt-4"></div>
+            <p className="text-xl text-white mt-2">
+              main: {data.weather ? data.weather[0].main : null}
+            </p>
+            <div className="w-full h-1 bg-white rounded-full opacity-35 mt-4"></div>
+
+            {/* <img src=  {data.weather ? data.weather.icon : null}className='text-xl text-white mt-2'/> */}
+            <p className="text-xl text-white mt-2">
+              speed: {data.wind ? data.wind.speed : null} m/s
+            </p>
+            <div className="w-full h-1 bg-white rounded-full opacity-35 mt-4"></div>
+            <p className="text-xl text-white mt-2">
+              Humidity: {data.main ? data.main.humidity : null}%
+            </p>
+            <div className="w-full h-1 bg-white rounded-full opacity-35 mt-4"></div>
+            <p className="text-xl text-white mt-2">
+              Temperature: {data.main ? Math.floor(data.main.temp) : null}°C
+            </p>
+            <div className="w-full h-1 bg-white rounded-full opacity-35 mt-4"></div>
+            <p className="text-xl text-white mt-2">
+              Pressure: {data.main ? data.main.pressure : null} hPa
+            </p>
+            <div className="w-full h-1 bg-white rounded-full opacity-35 mt-4"></div>
+            <p className="text-xl text-white mt-2">
+              Wind Direction: {data.wind ? data.wind.deg : null}°
+            </p>
+          </div>
+        </div>
+      </div>
+      <div>{error ? <Error/> : null}</div>
+    </>
+  );
+}
+
+export default Weather;

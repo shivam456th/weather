@@ -1,0 +1,17 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.Imagebg {
+    background-image: url('./backgroundimage.avif');
+    background-size: cover;
+    background-position: center;
+    opacity: 0.80;
+    background-color: black;
+}
+
+.ErrorImage {
+    background-image: url('1-10.webp');
+    background-size: cover;
+    background-position: center;
+}
